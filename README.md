@@ -1,8 +1,6 @@
-OpenWrt 自动化每日构建
-
 # OpenWrt 自动化每日构建
 
-[![OpenWrt Daily Build](https://github.com/your_username/openwrt-daily-build/actions/workflows/build-openwrt.yml/badge.svg)](https://github.com/your_username/openwrt-daily-build/actions/workflows/build-openwrt.yml)
+[![OpenWrt Daily Build](https://github.com/suifei/openwrt-daily-build/actions/workflows/build-openwrt.yml/badge.svg)](https://github.com/suifei/openwrt-daily-build/actions/workflows/build-openwrt.yml)
 
 本项目使用 GitHub Actions 自动化构建 OpenWrt 固件，支持多种设备配置。每日定时构建，确保获取最新的代码更新和安全修复。
 
@@ -22,7 +20,7 @@ OpenWrt 自动化每日构建
 
 ## 下载固件
 
-固件可以在项目的 [Actions](https://github.com/your_username/openwrt-daily-build/actions) 页面中找到。每个设备对应一个 workflow run，可以在 run 详情页面的 Artifacts 部分下载对应的固件。
+固件可以在项目的 [Actions](https://github.com/suifei/openwrt-daily-build/actions) 页面中找到。每个设备对应一个 workflow run，可以在 run 详情页面的 Artifacts 部分下载对应的固件。
 
 ## 自定义
 
@@ -35,12 +33,11 @@ OpenWrt 自动化每日构建
 如果你有任何改进建议或者想要增加新的设备支持，欢迎提交 issue 或者 pull request。
 
 ---
-
-OpenWrt Automatic Daily Build
+english version
 
 # OpenWrt Automatic Daily Build
 
-[![OpenWrt Daily Build](https://github.com/your_username/openwrt-daily-build/actions/workflows/build-openwrt.yml/badge.svg)](https://github.com/your_username/openwrt-daily-build/actions/workflows/build-openwrt.yml)
+[![OpenWrt Daily Build](https://github.com/suifei/openwrt-daily-build/actions/workflows/build-openwrt.yml/badge.svg)](https://github.com/suifei/openwrt-daily-build/actions/workflows/build-openwrt.yml)
 
 This project uses GitHub Actions to automatically build OpenWrt firmware on a daily basis, supporting multiple device configurations. Daily scheduled builds ensure the latest code updates and security fixes are included.
 
@@ -60,7 +57,7 @@ This project uses GitHub Actions to automatically build OpenWrt firmware on a da
 
 ## Downloading Firmware
 
-Firmware can be found on the [Actions](https://github.com/your_username/openwrt-daily-build/actions) page of the project. Each device corresponds to a workflow run, and the corresponding firmware can be downloaded in the Artifacts section of the run details page.
+Firmware can be found on the [Actions](https://github.com/suifei/openwrt-daily-build/actions) page of the project. Each device corresponds to a workflow run, and the corresponding firmware can be downloaded in the Artifacts section of the run details page.
 
 ## Customization
 
