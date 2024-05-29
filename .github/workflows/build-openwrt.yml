@@ -1,0 +1,75 @@
+name: OpenWrt Daily Build
+
+on:
+  push:
+    branches: 
+      - main
+#   schedule:
+#     - cron: '0 0 * * *'
+  
+jobs:
+
+  build:
+    runs-on: ubuntu-20.04
+    
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@main
+      
+    - name: Initialization Environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo timedatectl set-timezone "Asia/Shanghai"
+        sudo -E apt-get -qq update
+        sudo -E apt-get -qq install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python3 unzip zlib1g-dev lib32gcc-s1 libc6-dev-i386 subversion flex uglifyjs gcc-multilib g++-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler antlr3 gperf
+        
+    - name: Update Feeds
+      run: |
+        git clone https://github.com/openwrt/openwrt.git openwrt
+        cd openwrt
+        ./scripts/feeds update -a
+        
+    - name: Generate Configuration File
+      env:
+        DEVICE_CONFIG: ${{ matrix.config }}  
+        FEEDS_CONFIG: ${{ matrix.feeds }}
+      run: |
+        [ -e files ] && mv files openwrt/files
+        cd openwrt
+        cp configs/$DEVICE_CONFIG .config
+        cp configs/$FEEDS_CONFIG feeds.conf.default
+        ./scripts/feeds install -a
+        make defconfig
+        
+    - name: Download Packages
+      run: |
+        cd openwrt
+        make download -j$(nproc)
+        
+    - name: Compile Firmware
+      run: |
+        cd openwrt
+        echo -e "$(nproc) thread compile"
+        make -j$(nproc) || make -j1 V=s
+        
+    - name: Upload Artifact
+      uses: actions/upload-artifact@main
+      if: success()
+      with:
+        name: OpenWrt_firmware_${{ matrix.config }}
+        path: openwrt/bin/targets/
+
+    - name: Upload Compile Log
+      uses: actions/upload-artifact@main
+      if: failure()
+      with:
+        name: compile_log_${{ matrix.config }}
+        path: openwrt/bin
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config: [xiaomi_ax6s.config]
+        feeds: [xiaomi_ax6s_feeds.config]
