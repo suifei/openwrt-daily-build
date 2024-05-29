@@ -37,7 +37,11 @@ jobs:
         FEEDS_CONFIG: ${{ matrix.feeds }}
       run: |
         [ -e files ] && mv files openwrt/files
+        pwd
+        ls
         cd openwrt
+        pwd
+        ls
         cp configs/$DEVICE_CONFIG .config
         cp configs/$FEEDS_CONFIG feeds.conf.default
         ./scripts/feeds install -a
