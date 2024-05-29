@@ -29,21 +29,16 @@ jobs:
       run: |
         git clone https://github.com/openwrt/openwrt.git openwrt
         cd openwrt
-        ./scripts/feeds update -a
         
     - name: Generate Configuration File
       env:
         DEVICE_CONFIG: ${{ matrix.config }}  
         FEEDS_CONFIG: ${{ matrix.feeds }}
       run: |
-        [ -e files ] && mv files openwrt/files
-        pwd
-        ls
+        cp configs/$DEVICE_CONFIG .config
+        cp configs/$FEEDS_CONFIG feeds.conf.default
         cd openwrt
-        pwd
-        ls
-        cp ../configs/$DEVICE_CONFIG .config
-        cp ../configs/$FEEDS_CONFIG feeds.conf.default
+        ./scripts/feeds update -a
         ./scripts/feeds install -a
         make defconfig
         
