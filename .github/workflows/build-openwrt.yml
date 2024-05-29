@@ -42,8 +42,8 @@ jobs:
         cd openwrt
         pwd
         ls
-        cp configs/$DEVICE_CONFIG .config
-        cp configs/$FEEDS_CONFIG feeds.conf.default
+        cp ../configs/$DEVICE_CONFIG .config
+        cp ../configs/$FEEDS_CONFIG feeds.conf.default
         ./scripts/feeds install -a
         make defconfig
         
