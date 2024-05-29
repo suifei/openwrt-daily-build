@@ -4,8 +4,8 @@ on:
   push:
     branches: 
       - main
-    tags:
-      - v*
+#    tags:
+#      - v*
 #   schedule:
 #     - cron: '0 0 * * *'
   
@@ -162,5 +162,5 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        config: [xiaomi_ax9000, xiaomi_ax6s, x86_64]
+        config: [xiaomi_ax6s]
         build_type: [official, full_components]
