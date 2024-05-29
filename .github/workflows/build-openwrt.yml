@@ -58,19 +58,23 @@ jobs:
         cd openwrt
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 V=s
-        
+    
+    - name: Check space usage
+      if: (!cancelled())
+      run: df -hT
+
     - name: Upload Artifact
       uses: actions/upload-artifact@main
       if: success()
       with:
-        name: OpenWrt_firmware_${{ matrix.config }}
+        name: OpenWrt_firmware_${{ matrix.name }}_$(date +"%Y%m%d%H%M")
         path: openwrt/bin/targets/
 
     - name: Upload Compile Log
       uses: actions/upload-artifact@main
       if: failure()
       with:
-        name: compile_log_${{ matrix.config }}
+        name: compile_log_${{ matrix.name }}
         path: openwrt/bin
 
     strategy:
@@ -78,3 +82,4 @@ jobs:
       matrix:
         config: [xiaomi_ax6s.config]
         feeds: [xiaomi_ax6s_feeds.config]
+        name: [xiaomi_ax6s]
