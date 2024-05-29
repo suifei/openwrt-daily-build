@@ -36,6 +36,7 @@ jobs:
         FEEDS_CONFIG: ${{ matrix.feeds }}
       run: |
         ls -al
+        ls ./configs -al
         cp ./configs/$DEVICE_CONFIG .config
         cp ./configs/$FEEDS_CONFIG feeds.conf.default
         cd openwrt
