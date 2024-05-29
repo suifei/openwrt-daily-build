@@ -113,9 +113,6 @@ echo "Add luci-app-homeproxy	homeproxy proxy	homeproxy 代理"
 ./scripts/feeds install -a
 ./scripts/feeds install -a
 
-# Generate configuration file
-make menuconfig
-
 # mediatek mt7622b for Xiaomi AX6S
 
 cat > ./env/.config <<EOF
@@ -238,6 +235,11 @@ CONFIG_VERSION_REPO="https://downloads.openwrt.org/releases/23.05.3"
 CONFIG_VERSION_SUPPORT_URL=""
 EOF
 
+
+# Generate configuration file
+make menuconfig
+
+# Show configuration
 cat ./.config
 
 # Modify default IP
