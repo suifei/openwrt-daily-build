@@ -1,4 +1,4 @@
-name: Build OpenWrt (Official && Full Components)
+name: Build OpenWrt (Official and Full Components)
 
 on:
   push:
