@@ -17,12 +17,13 @@ deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-backports main contrib
 deb https://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware
 # deb-src https://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware
 EOF
-
-sudo cp -rf ./sources.list /etc/apt 
-sudo apt update
-
+# 比较新生成的 sources.list 与 /etc/apt/sources.list 的内容
+# 如果内容不同,则备份原文件并复制新文件
+if ! diff sources.list /etc/apt/sources.list >/dev/null 2>&1; then
+  sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup
+  sudo cp -rf ./sources.list /etc/apt
+fi
 # Install build essential
-
 sudo apt update
 
 sudo apt install -y build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python3 unzip zlib1g-dev lib32gcc-s1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler g++-multilib antlr3 gperf wget rsync curl screen python2

@@ -21,9 +21,30 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
+        set +e
         sudo timedatectl set-timezone "Asia/Shanghai"
+        docker rmi `docker images -q`
+        sudo rm -rf \
+          /usr/share/dotnet \
+          /etc/mysql \
+          /etc/php
+        sudo -E apt-get -y purge \
+          azure-cli \
+          ghc* \
+          zulu* \
+          hhvm \
+          llvm* \
+          firefox \
+          google* \
+          dotnet* \
+          powershell \
+          openjdk* \
+          mysql* \
+          php*
         sudo -E apt-get -qq update
         sudo -E apt-get -qq install ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libfuse-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpython3-dev libreadline-dev libssl-dev libtool lrzsz mkisofs msmtp ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pyelftools python3-setuptools qemu-utils rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
+        sudo -E apt-get -y autoremove --purge
+        sudo -E apt-get clean
 
     - name: Downloading OpenWrt
       run: |
@@ -35,8 +56,44 @@ jobs:
         DEVICE_CONFIG: ${{ matrix.config }}.config
         FEEDS_CONFIG: ${{ matrix.config }}_feeds.config
       run: |
-        cp ./configs/$DEVICE_CONFIG .config
-        cp ./configs/$FEEDS_CONFIG feeds.conf.default
+        cd openwrt
+        cp ../configs/$DEVICE_CONFIG .config
+        cp ../configs/$FEEDS_CONFIG feeds.conf.default
+      
+    - name: Add SSRP
+      run: |
+        cd openwrt
+        echo "Add luci-app-alist	file list program	支持多存储的文件列表程序"
+        echo "Add luci-app-advanced	System advanced settings	系统高级设置"
+        echo "Add luci-app-adguardhome	Block adg	AdG去广告"
+        echo "Add luci-theme-atmaterial_new	atmaterial theme (adapted to luci-18.06)	Atmaterial 三合一主题"
+        echo "Add luci-theme-argone	argone theme	修改老竭力主题名"
+        echo "Add luci-app-argone-config	argone theme settings	argone主题设置"
+        echo "Add luci-app-aliddns	aliyunddns	阿里云ddns插件"
+        echo "Add luci-app-aliyundrive-webdav	Aliyun Disk WebDAV Service	阿里云盘 WebDAV 服务"
+        echo "Add luci-app-dnsfilter	dns ad filtering	基于DNS的广告过滤"
+        echo "Add luci-theme-design	design theme	design 主题"
+        echo "Add luci-app-amlogic	Amlogic Service	晶晨宝盒"
+        echo "Add luci-app-eqos	Speed ​​limit by IP address	依IP地址限速"
+        echo "Add luci-app-gost	https proxy	隐蔽的https代理"
+        echo "Add luci-app-openclash	openclash proxy	clash的图形代理软件"
+        echo "Add luci-app-passwall	passwall proxy	passwall代理软件"
+        echo "Add luci-app-wechatpush	WeChat/DingTalk Pushed plugins	微信/钉钉推送"
+        echo "Add luci-theme-tomato	Modify topic name	tomato主题"
+        echo "Add luci-app-smartdns	smartdns dns pollution prevention	smartdns DNS防污染"
+        echo "Add luci-app-ssr-plus	ssr-plus proxy	ssr-plus 代理软件"
+        echo "Add luci-app-store	store software repository	应用商店"
+        echo "Add luci-theme-mcat	Modify topic name	mcat主题"
+        echo "Add luci-app-mosdns	mosdns dns offload	DNS 国内外分流解析与广告过滤"
+        echo "Add luci-app-unblockneteasemusic	Unlock NetEase Cloud Music	解锁网易云音乐"
+        echo "Add luci-app-homeproxy	homeproxy proxy	homeproxy 代理"
+       
+        echo "src-git kenzo https://github.com/kenzok8/openwrt-packages" >> ./feeds.conf.default
+        echo "src-git small https://github.com/kenzok8/small" >> ./feeds.conf.default
+        echo "show feeds:"
+        cat ./feeds.conf.default
+        echo "Compile config:"
+        cat ./.config
       
     - name: Update Feeds
       run: |
@@ -64,21 +121,41 @@ jobs:
       if: (!cancelled())
       run: |
         cd openwrt
-        df -hT
+        echo "======================="
+        echo "Space usage:"
+        echo "======================="
+        df -h
+        echo "======================="
+        du -h ./ --max-depth=1
+        du -h ~/openwrt/ --max-depth=1 || true
+        
+        # Prepare artifact
+        mkdir -p ./artifact/firmware
+        mkdir -p ./artifact/package
+        mkdir -p ./artifact/buildinfo
+        rm -rf $(find ./bin/targets/ -type d -name "packages")
+        cp -rf $(find ./bin/targets/ -type f) ./artifact/firmware/
+        cp -rf $(find ./bin/packages/ -type f -name "*.ipk") ./artifact/package/
+        cp -rf $(find ./bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
+        
+        # Deliver buildinfo
+        ls ./artifact/buildinfo/
+        
+        # Deliver package
+        ls ./artifact/package/
+        
+        # Deliver firmware
+        ls ./bin/targets/
+        
+        # Upload release asset
+        ls ./artifact/firmware/*
 
     - name: Upload Artifact
       uses: actions/upload-artifact@main
       if: success()
       with:
         name: OpenWrt_firmware_${{ matrix.config }}_$(date +"%Y%m%d%H%M")
-        path: openwrt/bin/targets/
-
-    - name: Upload Compile Log
-      uses: actions/upload-artifact@main
-      if: failure()
-      with:
-        name: compile_log_${{ matrix.config }}
-        path: openwrt/bin
+        path: openwrt/artifact
 
     strategy:
       fail-fast: false
