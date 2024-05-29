@@ -1,3 +1,4 @@
+#!/bin/bash
 # Windows WSL Debian
 
 # Update apt source
@@ -25,28 +26,88 @@ if ! diff sources.list /etc/apt/sources.list >/dev/null 2>&1; then
 fi
 # Install build essential
 sudo apt update
-
-sudo apt install -y build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python3 unzip zlib1g-dev lib32gcc-s1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler g++-multilib antlr3 gperf wget rsync curl screen python2
-
-sudo -E apt-get -y autoremove --purge
+sudo apt install -y ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libfuse-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpython3-dev libreadline-dev libssl-dev libtool lrzsz mkisofs msmtp ninja-build p7zip p7zip-full patch pkgconf python3 python3-pyelftools python3-setuptools qemu-utils rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
+sudo apt-get -y autoremove --purge
 df -h
 
 
 # Git clone sources
 
-git clone https://github.com/openwrt/openwrt.git
-cd openwrt
+# 如果 openwrt 目录不存在,则克隆源码
+if [ ! -d "openwrt" ]; then
+  # 最大重试次数
+  max_retries=30
+
+  # 重试计数器
+  retry_count=0
+
+  # 克隆源码
+  while [ $retry_count -lt $max_retries ]; do
+    git clone https://github.com/openwrt/openwrt.git
+    if [ $? -eq 0 ]; then
+      echo "OpenWrt source code cloned successfully."
+      break
+    else
+      echo "Failed to clone OpenWrt source code. Retrying (attempt $((retry_count+1))/$max_retries)..."
+      retry_count=$((retry_count+1))
+      rm -rf openwrt
+      sleep 5
+    fi
+  done
+
+  # 检查是否克隆成功
+  if [ $retry_count -eq $max_retries ]; then
+    echo "Failed to clone OpenWrt source code after $max_retries attempts. Aborting."
+    exit 1
+  fi
+  cd openwrt
+else
+  echo "OpenWrt directory already exists. Updating..."
+  cd openwrt
+
+  # 切换到最新版本,放弃本地修改
+  git checkout .
+  git checkout main
+  git pull
+fi
 
 # Cleanup folders
 
 
 # Update feeds
 cat > feeds.conf.default <<EOF
+src-git kenzo https://github.com/kenzok8/openwrt-packages
+src-git small https://github.com/kenzok8/small
 src-git packages https://git.openwrt.org/feed/packages.git^063b2393c
 src-git luci https://git.openwrt.org/project/luci.git^b07cf9dcfc
 src-git routing https://git.openwrt.org/feed/routing.git^6487539 
 src-git telephony https://git.openwrt.org/feed/telephony.git^86af194
 EOF
+
+echo "Add luci-app-alist	file list program	支持多存储的文件列表程序"
+echo "Add luci-app-advanced	System advanced settings	系统高级设置"
+echo "Add luci-app-adguardhome	Block adg	AdG去广告"
+echo "Add luci-theme-atmaterial_new	atmaterial theme (adapted to luci-18.06)	Atmaterial 三合一主题"
+echo "Add luci-theme-argone	argone theme	修改老竭力主题名"
+echo "Add luci-app-argone-config	argone theme settings	argone主题设置"
+echo "Add luci-app-aliddns	aliyunddns	阿里云ddns插件"
+echo "Add luci-app-aliyundrive-webdav	Aliyun Disk WebDAV Service	阿里云盘 WebDAV 服务"
+echo "Add luci-app-dnsfilter	dns ad filtering	基于DNS的广告过滤"
+echo "Add luci-theme-design	design theme	design 主题"
+echo "Add luci-app-amlogic	Amlogic Service	晶晨宝盒"
+echo "Add luci-app-eqos	Speed ​​limit by IP address	依IP地址限速"
+echo "Add luci-app-gost	https proxy	隐蔽的https代理"
+echo "Add luci-app-openclash	openclash proxy	clash的图形代理软件"
+echo "Add luci-app-passwall	passwall proxy	passwall代理软件"
+echo "Add luci-app-wechatpush	WeChat/DingTalk Pushed plugins	微信/钉钉推送"
+echo "Add luci-theme-tomato	Modify topic name	tomato主题"
+echo "Add luci-app-smartdns	smartdns dns pollution prevention	smartdns DNS防污染"
+echo "Add luci-app-ssr-plus	ssr-plus proxy	ssr-plus 代理软件"
+echo "Add luci-app-store	store software repository	应用商店"
+echo "Add luci-theme-mcat	Modify topic name	mcat主题"
+echo "Add luci-app-mosdns	mosdns dns offload	DNS 国内外分流解析与广告过滤"
+echo "Add luci-app-unblockneteasemusic	Unlock NetEase Cloud Music	解锁网易云音乐"
+echo "Add luci-app-homeproxy	homeproxy proxy	homeproxy 代理"
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
