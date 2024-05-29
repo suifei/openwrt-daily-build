@@ -32,8 +32,8 @@ jobs:
         
     - name: Copy Configs
       env:
-        DEVICE_CONFIG: ${{ matrix.config }}  
-        FEEDS_CONFIG: ${{ matrix.feeds }}
+        DEVICE_CONFIG: ${{ matrix.config }}.config
+        FEEDS_CONFIG: ${{ matrix.config }}_feeds.config
       run: |
         cp ./configs/$DEVICE_CONFIG .config
         cp ./configs/$FEEDS_CONFIG feeds.conf.default
@@ -46,6 +46,7 @@ jobs:
 
     - name: Make Defconfig
       run: |
+        cd openwrt
         make defconfig
         
     - name: Download Packages
@@ -61,25 +62,25 @@ jobs:
     
     - name: Check space usage
       if: (!cancelled())
-      run: df -hT
+      run: |
+        cd openwrt
+        df -hT
 
     - name: Upload Artifact
       uses: actions/upload-artifact@main
       if: success()
       with:
-        name: OpenWrt_firmware_${{ matrix.name }}_$(date +"%Y%m%d%H%M")
+        name: OpenWrt_firmware_${{ matrix.config }}_$(date +"%Y%m%d%H%M")
         path: openwrt/bin/targets/
 
     - name: Upload Compile Log
       uses: actions/upload-artifact@main
       if: failure()
       with:
-        name: compile_log_${{ matrix.name }}
+        name: compile_log_${{ matrix.config }}
         path: openwrt/bin
 
     strategy:
       fail-fast: false
       matrix:
-        config: [xiaomi_ax6s.config]
-        feeds: [xiaomi_ax6s_feeds.config]
-        name: [xiaomi_ax6s]
+        config: [xiaomi_ax6s]
