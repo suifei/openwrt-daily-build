@@ -1,7 +1,6 @@
 # OpenWrt 自动化每日构建
 
-[![OpenWrt Daily Build](https://github.com/suifei/openwrt-daily-build/actions/workflows/build-openwrt-official.yml/badge.svg)](https://github.com/suifei/openwrt-daily-build/actions/workflows/build-openwrt-official.yml)
-[![OpenWrt Daily Build](https://github.com/suifei/openwrt-daily-build/actions/workflows/build-openwrt-full-components.yml/badge.svg)](https://github.com/suifei/openwrt-daily-build/actions/workflows/build-openwrt-full-components.yml)
+[![OpenWrt Daily Build](https://github.com/suifei/openwrt-daily-build/actions/workflows/build-openwrt.yml/badge.svg)](https://github.com/suifei/openwrt-daily-build/actions/workflows/build-openwrt.yml)
 
 本项目使用 GitHub Actions 自动化构建 OpenWrt 固件，支持多种设备配置。每日定时构建，确保获取最新的代码更新和安全修复。
 
@@ -17,7 +16,7 @@
 2. 在新仓库的 `Settings` -> `Secrets` 中添加以下密钥：
    - `RELEASES_TOKEN`: 用于发布固件的 GitHub token。
 3. 在新仓库的 `configs` 目录下添加你的设备配置文件，文件名格式为 `设备名.config`。
-4. 在新仓库的 `.github/workflows/build-openwrt-official.yml` `.github/workflows/build-openwrt-full-components.yml` 文件中的 `matrix` 部分添加你的设备名和对应的 feeds 配置文件名。
+4. 在新仓库的 `.github/workflows/build-openwrt.yml` 文件中的 `matrix` 部分添加你的设备名和对应的 feeds 配置文件名。
 5. 提交你的修改，GitHub Actions 将自动开始构建固件。
 
 ## 下载固件
@@ -28,11 +27,11 @@
 
 你可以通过修改 `configs` 目录下的设备配置文件来自定义固件功能。比如添加新的软件包、调整编译选项等。
 
-如果你想添加新的设备，可以在 `configs` 目录下创建一个新的设备配置文件，然后在 `.github/workflows/build-openwrt-official.yml` `.github/workflows/build-openwrt-full-components.yml` 文件的 `matrix` 部分添加新设备的信息。
+如果你想添加新的设备，可以在 `configs` 目录下创建一个新的设备配置文件，然后在 `.github/workflows/build-openwrt.yml` 文件的 `matrix` 部分添加新设备的信息。
 
 ## 工作流说明
 
-本仓库包含两个用于自动构建 OpenWrt 固件的 GitHub Actions 工作流:
+本仓库包含用于自动构建 OpenWrt 固件的 GitHub Actions 工作流:
 
 1. `Build OpenWrt (Official)`: 构建 OpenWrt 官方版本
 2. `Build OpenWrt (Full Components)`: 构建包含全部组件的 OpenWrt 版本
@@ -108,8 +107,7 @@ Here's the English version of the README:
 
 # OpenWrt Automated Daily Build
 
-[![OpenWrt Daily Build](https://github.com/suifei/openwrt-daily-build/actions/workflows/build-openwrt-official.yml/badge.svg)](https://github.com/suifei/openwrt-daily-build/actions/workflows/build-openwrt-official.yml)
-[![OpenWrt Daily Build](https://github.com/suifei/openwrt-daily-build/actions/workflows/build-openwrt-full-components.yml/badge.svg)](https://github.com/suifei/openwrt-daily-build/actions/workflows/build-openwrt-full-components.yml)
+[![OpenWrt Daily Build](https://github.com/suifei/openwrt-daily-build/actions/workflows/build-openwrt.yml/badge.svg)](https://github.com/suifei/openwrt-daily-build/actions/workflows/build-openwrt.yml)
 
 This project uses GitHub Actions to automate the building of OpenWrt firmware, supporting various device configurations. Daily scheduled builds ensure the latest code updates and security fixes are obtained.
 
@@ -125,7 +123,7 @@ This project uses GitHub Actions to automate the building of OpenWrt firmware, s
 2. Add the following secrets in the `Settings` -> `Secrets` of the new repository:
    - `RELEASES_TOKEN`: GitHub token for publishing firmware.
 3. Add your device configuration files in the `configs` directory of the new repository, with file names in the format of `device_name.config`.
-4. Add your device name and corresponding feeds configuration file name in the `matrix` section of `.github/workflows/build-openwrt-official.yml` and `.github/workflows/build-openwrt-full-components.yml`.
+4. Add your device name and corresponding feeds configuration file name in the `matrix` section of `.github/workflows/build-openwrt.yml`.
 5. Commit your changes, and GitHub Actions will automatically start building the firmware.
 
 ## Download Firmware
@@ -136,11 +134,11 @@ Firmware can be found on the [Actions](https://github.com/suifei/openwrt-daily-b
 
 You can customize firmware features by modifying the device configuration files in the `configs` directory. For example, adding new packages, adjusting compile options, etc.
 
-If you want to add support for new devices, you can create a new device configuration file in the `configs` directory and add the new device information in the `matrix` section of `.github/workflows/build-openwrt-official.yml` and `.github/workflows/build-openwrt-full-components.yml`.
+If you want to add support for new devices, you can create a new device configuration file in the `configs` directory and add the new device information in the `matrix` section of `.github/workflows/build-openwrt.yml`.
 
 ## Workflow Description
 
-This repository contains two GitHub Actions workflows for automatically building OpenWrt firmware:
+This repository contains GitHub Actions workflows for automatically building OpenWrt firmware:
 
 1. `Build OpenWrt (Official)`: Build the official version of OpenWrt
 2. `Build OpenWrt (Full Components)`: Build OpenWrt version with full components
