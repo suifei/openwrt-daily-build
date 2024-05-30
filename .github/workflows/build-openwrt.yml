@@ -70,9 +70,11 @@ jobs:
       uses: actions/upload-artifact@main
       if: success()
       with:
-        name: OpenWrt_firmware_${{ matrix.config }}_$(date +"%Y%m%d%H%M")
+        name: OpenWrt_firmware_${{ matrix.config }}_$(date +%Y%m%d%H%M)
         path: openwrt/bin/targets/
-
+        compression-level: 9
+        overwrite: false
+  
     - name: Upload Compile Log
       uses: actions/upload-artifact@main
       if: failure()
