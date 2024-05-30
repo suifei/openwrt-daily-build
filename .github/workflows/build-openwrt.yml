@@ -100,6 +100,7 @@ jobs:
     - name: Update Feeds
       run: |
         cd openwrt
+        git pull
         ./scripts/feeds update -a
         ./scripts/feeds install -a
 
@@ -163,4 +164,4 @@ jobs:
       fail-fast: false
       matrix:
         config: [xiaomi_ax6s]
-        build_type: [official, full_components]
+        build_type: [official]
