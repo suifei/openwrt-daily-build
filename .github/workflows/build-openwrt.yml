@@ -64,7 +64,34 @@ jobs:
       if: (!cancelled())
       run: |
         cd openwrt
-        df -hT
+        echo "======================="
+        echo "Space usage:"
+        echo "======================="
+        df -h
+        echo "======================="
+        du -h ./ --max-depth=1
+        du -h ~/openwrt/ --max-depth=1 || true
+        
+        # Prepare artifact
+        mkdir -p ./artifact/firmware
+        mkdir -p ./artifact/package
+        mkdir -p ./artifact/buildinfo
+        rm -rf $(find ./bin/targets/ -type d -name "packages")
+        cp -rf $(find ./bin/targets/ -type f) ./artifact/firmware/
+        cp -rf $(find ./bin/packages/ -type f -name "*.ipk") ./artifact/package/
+        cp -rf $(find ./bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
+        
+        # Deliver buildinfo
+        ls ./artifact/buildinfo/
+        
+        # Deliver package
+        ls ./artifact/package/
+        
+        # Deliver firmware
+        ls ./bin/targets/
+        
+        # Upload release asset
+        ls ./artifact/firmware/*
 
     - name: Upload Artifact
       uses: actions/upload-artifact@main
