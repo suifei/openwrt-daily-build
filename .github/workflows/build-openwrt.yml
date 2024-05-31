@@ -101,7 +101,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: success()
       with:
-        name: OpenWrt_firmware_${{ matrix.config }}_$(date +"%Y%m%d%H%M")
+        name: OpenWrt_firmware_${{ matrix.config }}_${{ github.ref_name }}.zip
         path: openwrt/artifact
         compression-level: 9
         overwrite: false
