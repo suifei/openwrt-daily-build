@@ -70,7 +70,7 @@ jobs:
         df -h
         echo "======================="
         du -h ./ --max-depth=1
-        du -h ~/openwrt/ --max-depth=1 || true
+        du -h ../ --max-depth=1 || true
         
         # Prepare artifact
         mkdir -p ./artifact/firmware
@@ -92,6 +92,10 @@ jobs:
         
         # Upload release asset
         ls ./artifact/firmware/*
+
+        ls .
+        pwd
+        
 
     - name: Upload Artifact
       uses: actions/upload-artifact@main
