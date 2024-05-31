@@ -42,9 +42,10 @@ jobs:
           cp ./configs/$FEEDS_CONFIG feeds.conf.default
         else
           echo "添加完整组件..."  
-          cp  ./configs/$DEVICE_CONFIG .config
-          cat ./configs/add_feeds.config > feeds.conf.default
-          cat ./configs/$FEEDS_CONFIG >> feeds.conf.default
+          cat ./configs/add_conf.config   >   .config
+          cat  ./configs/$DEVICE_CONFIG   >>  .config
+          cat ./configs/add_feeds.config  >   feeds.conf.default
+          cat ./configs/$FEEDS_CONFIG     >>  feeds.conf.default
         fi
       
     - name: Update Feeds
