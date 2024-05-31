@@ -43,8 +43,10 @@ jobs:
         else
           echo "添加完整组件..."  
           cat ./configs/add_conf.config   >   .config
+          echo ""                         >>  .config
           cat ./configs/$DEVICE_CONFIG    >>  .config
           cat ./configs/add_feeds.config  >   feeds.conf.default
+          echo ""                         >>  feeds.conf.default
           cat ./configs/$FEEDS_CONFIG     >>  feeds.conf.default
         fi
         cat .config
