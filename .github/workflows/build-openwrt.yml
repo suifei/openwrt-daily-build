@@ -102,15 +102,11 @@ jobs:
         # Upload release asset
         ls ./artifact/firmware/*
 
-        ls .
-        pwd
-        
-
     - name: Upload Artifact
       uses: actions/upload-artifact@main
       if: success()
       with:
-        name: OpenWrt_firmware_${{ matrix.config }}_${{ matrix.build_type }}_${{ github.ref_name }}.zip
+        name: OpenWrt_firmware_${{ matrix.config }}_${{ matrix.build_type }}_${{ github.ref_name }}
         path: openwrt/artifact
         compression-level: 9
         overwrite: false
